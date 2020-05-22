@@ -1,4 +1,5 @@
 整理并记录各种系统下的一些工具的使用和说明。
+https://tudoublog.com/about
 
 以下是目录：
 git
@@ -10,7 +11,9 @@ MacOS：
 homebrew
 
 Windows:
-chocolatey
+chocolatey:
+https://blog.csdn.net/chszs/article/details/51782334
+https://my.oschina.net/liuzidong/blog/2962146
 
 Linux：
 apt-get
