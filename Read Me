@@ -6,7 +6,14 @@ git
 yarn
 nodeJS
 python
+npm
 vscode:https://www.cnblogs.com/felixnet/p/10672366.html
+
+oracle
+mysql
+sqlserver
+mongdb
+redis
 
 MacOS：
 homebrew
@@ -15,9 +22,7 @@ Windows:
 chocolatey:
 https://blog.csdn.net/chszs/article/details/51782334
 https://my.oschina.net/liuzidong/blog/2962146
+powershell
 
 Linux：
 apt-get
-
-Node.js:
-npm
