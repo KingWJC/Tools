@@ -26,3 +26,7 @@ apt-get
 
 
 choco安装yarn失败，最后使用npm安装。
+
+HTTP下载器：
+IDM 相信大家都不陌生，它的全称是 Internet Download Manager（简称 IDM），向来被誉为是最强的下载神器。
+IDM 能够多线程下载文件从而提升下载速度，还可以自动嗅探下载网页视频，配合脚本还可以实现百度网盘不限速下载，超级实用。
