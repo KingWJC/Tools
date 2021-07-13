@@ -41,11 +41,7 @@ CMMI5 工作产出和模型对比。 PI工作内容: 集成化策略，集成环
 
 本类分为 ExecuteNonQuery、ExecuteScalar、ExecuteScalar、ExecuteDataTable、ExecuteDataSet、ExecuteList Entity、ExecuteEntity七大部分，每一部分分为 无条件参数执行Sql语句或存储过程、SqlParameter[]参数执行Sql语句，Object[]参数执行存储过程三个重载方法
 
-[一个通用数据库操作组件DBUtil(c#)、支持SqlServer、Oracle、Mysql、postgres、Access、SQLITE_火焰-CSDN博客](https://blog.csdn.net/u010476739/article/details/54882950)
 
-[未在本地计算机上注册"OraOLEDB.Oracle"提供程序](https://www.cnblogs.com/polk6/archive/2013/03/22/2976028.htm)
-
-https://blog.csdn.net/agura/article/details/87113137
 
 OraOLEDB需要安装客户端。
 
@@ -61,27 +57,7 @@ Oracle 索引创建：
 
 [Oracle创建索引的基本规则_ITPUB博客](http://blog.itpub.net/22609129/viewspace-1116143/)
 
-索引查询
 
-SELECT INDEX_NAME,INDEX_TYPE,TABLESPACE_NAME,UNIQUENESS FROM ALL_INDEXES WHERE TABLE_NAME='TABLE_NAME'
-
-- -根据索引名，查询表索引字段
-
-select * from user_ind_columns where index_name='索引名';
-
-- -根据表名，查询一张表的索引
-
-select * from user_indexes where table_name='表名';
-
-索引创建
-
-CREATE INDEX INDEX_NAME ON TABLE_NAME(COLUMN_NAME)   —创建Normal类型的索引
-
-CREATE INDEX INDEX_NAME ON TABLE_NAME(‘COLUMN_NAME’)  —字段名加引号，则创建基于函数的索引
-
-删除索引
-
-DROP INDEX INDEX_NAME
 
 metalink文章：
 
@@ -139,6 +115,8 @@ Oracle中Top的用法： Oracle不支持select top 语句，所以在Oracle中�
 PLSQL使用工具中的，导出用户对象。来导出表结构，存储过程
 
 imp/exp可导出表结构和数据。
+
+exp jhicu/jhicu@10.1.1.14/jhicu file=D;/abc.dmp
 
 导入：
 

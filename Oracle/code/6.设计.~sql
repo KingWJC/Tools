@@ -1,0 +1,159 @@
+ --数据库定义语言DDL，表，约束，视图，序列，索引，存储过程
+ 
+ 
+--查找用户表和列
+select * from user_tab_columns where column_name=upper('name')
+--查询约束
+select constraint_name,constraint_type from user_constraints where table_name=upper('sxtstu05') or owner='SCOTT'
+--查询约束和其作用的列
+select constraint_name,column_name from user_cons_columns where table_name=upper('tablename')
+--查找用户视图
+SELECT * FROM user_views  WHERE view_name ='V_TEST01';
+--索引查询,根据表名
+SELECT INDEX_NAME,INDEX_TYPE,TABLESPACE_NAME,UNIQUENESS FROM ALL_INDEXES WHERE TABLE_NAME='TABLE_NAME'
+select * from user_indexes where table_name='表名';
+--查询表索引字段，根据索引名，
+select * from user_ind_columns where index_name='索引名';
+
+ 
+ --创建表的时候需要给表中的数据添加数据校验规则，这些规则称之为约束
+ /*
+ 约束分为五大类
+ not null: 非空约束，插入数据的时候某些列不允许为空
+ unique key:唯一键约束，可以限定某一个列的值是唯一的，唯一键的列一般被用作索引列。
+ primary key:主键：非空且唯一，任何一张表一般情况下最好有主键，用来唯一的标识一行记录，
+ foreign key:外键，当多个表之间有关联关系（一个表的某个列的值依赖与另一张表的某个值）的时候，需要使用外键
+ check约束:可以根据用户自己的需求去限定某些列的值
+ */
+
+
+--建表,注释，默认值
+CREATE TABLE TEST_DEPT
+(
+  ID NUMBER(10) PRIMARY KEY,
+  NAME VARCHAR2(20) NOT NULL
+);
+COMMENT ON TABLE TEST_DEPT IS '部门信息';
+COMMENT ON COLUMN TEST_DEPT.NAME IS '部门名称';
+
+CREATE TABLE TEST_USER
+(
+  ID NUMBER(10) PRIMARY KEY,
+  NAME VARCHAR2(20) NOT NULL,
+  AGE NUMBER(3) CHECK(AGE>0 AND AGE<200),
+  STATE NUMBER(1) DEFAULT 0,
+  EMAIL VARCHAR2(50) UNIQUE NOT NULL,
+  CREATE_DATE DATE,
+  DEPT_NO NUMBER(10) REFERENCE TEST_DEPT(ID), --列级约束 外键
+  PRIMARY KEY (ID,DEPT_NO),  --表级约束，联合主键
+  FOREIGN KEY(DEPT_NO) REFERENCE TEST_DEPT(ID) --表级约束 外键
+);
+
+--添加外键约束,最好先把外键关联表的数据优先插入
+ALTER TABLE TEST_USER ADD CONSTRAINT FK_0001 FOREIGN KEY(DEPT_NO) REFERENCES TEST_DEPT(ID);
+--删除约束
+DROP CONSTRAINT  FK_0001 [CASCADE];
+
+--表和列的注释
+COMMENT ON TABLE TEST_USER IS '用户信息';
+COMMENT ON COLUMN TEST_USER.NAME IS '用户名';
+
+--创建表的其他方式
+--复制表同时复制表数据，不会复制约束
+create table emp2 as select * from emp;
+--复制表结构但是不复制表数据，不会复制约束
+create table emp3 as select * from emp where 1=2;
+
+--修改表结构
+--添加新列，都为可为空，不能设置成not null
+ALTER TABLE TEST_USER ADD ADDRESS VARCHAR2(100);
+ALTER TABLE TEST_USER MODIFY(ADDRESS VARCHAR2(200));
+ALTER TABLE TEST_USER DROP COLUMN ADDRESS;
+
+--表/视图的重命名，要求必须是表（视图）的所有者
+RENAME TEST_USER TO USER;
+--删除表
+/*
+在删除表的时候，经常会遇到多个表关联的情况，多个表关联的时候不能随意删除，需要使用级联删除
+cascade: 如果A,B,A中的某一个字段跟B表中的某一个字段做关联，那么再删除表A的时候，需要先将表B删除
+set null: 再删除的时候，把表的关联字段设置成空
+*/
+DROP TABLE TEST_USER;
+DROP TABLE TEST_DEPT;
+
+
+
+/*  视图
+
+CREATE [OR REPLACE] VIEW view
+[(alias[, alias]...)]
+AS subquery
+[WITH READ ONLY];
+
+*/
+--如果普通用户第一次创建视图，提示没有权限，要使用管理员去修改权限
+grant create view to scott;
+
+--创建视图
+create view v_emp as select * from emp where deptno = 30;
+--视图的使用
+select * from v_emp;
+--向视图中添加数据,执行成功之后，需要提交事务，绿色表示提交事务，让数据生效，红色表示回滚事务，让数据恢复原状态
+insert into v_emp(empno,ename) values(1111,'zhangsan');
+select * from emp;
+--如果定义的视图是非只读视图的话，可以通过视图向表中插入数据，如果是只读视图，则不可以插入数据
+create view v_emp2 as select * from emp with read only;
+select * from v_emp2;
+--只读视图只提供查询的需求，无法进行增删改操作
+insert into v_emp2(empno,ename) values(1234,'lisi');
+--删除视图
+drop view v_emp2;
+--当删除视图中的数据的时候，如果数据来源于多个基表，则此时不能全部进行删除，只能删除一个表中的数据
+
+
+
+/*  序列
+create sequence seq_name
+  increment by n  每次增长几
+  start with n    从哪个值开始增长
+  maxvalue n|nomaxvalue 10^27 or -1  最大值
+  minvalue n|no minvalue  最小值
+	cycle|nocycle           是否有循环
+	cache n|nocache          是否有缓存
+
+*/
+create sequence my_sequence
+increment by 2
+start with 1
+
+--注意，如果创建好序列之后，没有经过任何的使用，那么不能获取当前的值，必须要先执行nextval之后才能获取当前值
+--查看当前序列的值
+select my_sequence.currval from dual;
+--获取序列的下一个值
+select my_sequence.nextval from dual;
+--插入新数据
+insert into emp(empno,ename) values(my_sequence.nextval,'hehe');
+--删除序列
+drop sequence my_sequence;
+
+
+/*
+     索引：加快数据的检索
+*/
+--创建索引
+create index i_ename on emp(col1,col2);
+--删除索引
+drop index i_ename;
+select * from emp where ename = 'SMITH';
+
+
+
+索引创建
+
+CREATE INDEX INDEX_NAME ON TABLE_NAME(COLUMN_NAME)   —创建Normal类型的索引
+
+CREATE INDEX INDEX_NAME ON TABLE_NAME(‘COLUMN_NAME’)  —字段名加引号，则创建基于函数的索引
+
+删除索引
+
+DROP INDEX INDEX_NAME
